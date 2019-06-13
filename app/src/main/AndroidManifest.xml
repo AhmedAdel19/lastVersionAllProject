@@ -24,9 +24,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BronzeActivity"></activity>
-        <activity android:name=".GoldenActivity" />
-        <activity android:name=".SelverActivity" />
+        <activity android:name=".SilverActivity"></activity>
+        <activity android:name=".GoldenActivity"></activity>
+        <activity android:name=".BronzeActivity" />
         <activity android:name=".allComplainActivity" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".AboEl3orif" />
@@ -34,12 +34,11 @@
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".SavedCommentActivity" />
         <activity android:name=".Manage_Catigories" />
-        <activity android:name=".manage_Category_list_item" />
-        <activity android:name=".Manage_category_childern" />
+
         <activity android:name=".Edit_Specific_Category_Place" />
+        <activity android:name=".Manage_categories_childern"></activity>
         <activity android:name=".Edit_Delete_All_Categories" />
         <activity android:name=".Manage_Areas" />
-        <activity android:name=".manage_Area_List_Item" />
         <activity android:name=".Edit_specific_area" />
         <activity android:name=".Edit_Delete_All_Areas" />
         <activity android:name=".Profile3" />

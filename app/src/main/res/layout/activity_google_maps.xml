@@ -17,7 +17,6 @@
         </include>
 
         <RelativeLayout
-            android:layout_marginTop="5dp"
             android:id="@+id/container_relativeLayout"
             android:layout_below="@+id/main_page_toolbar"
             android:layout_width="match_parent"
@@ -43,40 +42,42 @@
             <!--android:onClick="onClick"-->
             <!--tools:ignore="RtlCompat"-->
             <!--android:src="@mipmap/search_icon_bar"/>-->
-            <TextView
-                android:id="@+id/heading_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="32dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginTop="0dp"
-                android:text="Firebase Search"
-                android:textColor="#555555"
-                android:textSize="24sp" />
+            <!--<TextView-->
+            <!--android:id="@+id/heading_label"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentStart="true"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_marginStart="32dp"-->
+            <!--android:layout_marginLeft="32dp"-->
+            <!--android:layout_marginTop="0dp"-->
+            <!--android:text="Firebase Search"-->
+            <!--android:textColor="#555555"-->
+            <!--android:textSize="24sp" />-->
 
             <EditText
                 android:id="@+id/search_field"
-                android:layout_width="wrap_content"
+                android:layout_width="293dp"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/heading_label"
-                android:layout_alignLeft="@+id/heading_label"
-
-                android:layout_below="@+id/heading_label"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_alignTop="@+id/search_map_field"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginStart="51dp"
+                android:layout_marginLeft="51dp"
+                android:layout_marginTop="42dp"
+                android:layout_marginEnd="-2dp"
+                android:layout_marginRight="-2dp"
                 android:layout_toStartOf="@+id/search_btn"
                 android:layout_toLeftOf="@+id/search_btn"
                 android:background="@drawable/search_layout"
                 android:ems="10"
-                android:hint="Search here"
+                android:hint="Search on AbuEl3orif"
                 android:inputType="textPersonName"
-                android:paddingBottom="10dp"
                 android:paddingLeft="20dp"
+                android:paddingTop="5dp"
                 android:paddingRight="20dp"
-                android:paddingTop="10dp"
+                android:paddingBottom="5dp"
                 android:textColor="#999999"
                 android:textSize="16sp" />
 
@@ -89,18 +90,60 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/search_field"
                 android:layout_marginRight="30dp"
-                android:background="@null"
-                app:srcCompat="@drawable/ic_search_black_24dp"
-                tools:ignore="VectorDrawableCompat" />
+                android:background="@android:color/background_light"
+                app:srcCompat="@mipmap/search_button" />
+
+            <EditText
+                android:id="@+id/search_map_field"
+                android:layout_width="293dp"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/second_relative_layout"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginStart="51dp"
+                android:layout_marginLeft="51dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="-2dp"
+                android:layout_marginRight="-2dp"
+                android:layout_toStartOf="@+id/search_btn"
+                android:layout_toLeftOf="@+id/search_btn"
+                android:background="@drawable/search_layout"
+                android:ems="10"
+                android:hint="Search on Google Map"
+                android:inputType="textPersonName"
+                android:paddingLeft="20dp"
+                android:paddingTop="5dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="5dp"
+                android:textColor="#999999"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/search_map_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/search_map_field"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/search_map_field"
+                android:layout_marginRight="30dp"
+                android:background="@android:color/background_light"
+                app:srcCompat="@mipmap/search_button" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/result_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="71dp"
                 android:layout_below="@+id/search_field"
-                android:layout_marginTop="-3dp"
-                android:layout_marginBottom="310dp">
-
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginStart="54dp"
+                android:layout_marginLeft="54dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="68dp"
+                android:layout_marginRight="68dp">
 
             </android.support.v7.widget.RecyclerView>
 
@@ -149,7 +192,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
-                    android:layout_marginTop="284dp"
+                    android:layout_marginTop="177dp"
                     android:gravity="center"
                     android:paddingLeft="140dp"
                     android:paddingRight="50dp"
@@ -162,7 +205,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
-                    android:layout_marginTop="385dp"
+                    android:layout_marginTop="244dp"
                     android:gravity="center"
                     android:paddingLeft="140dp"
                     android:paddingRight="50dp"
@@ -176,7 +219,7 @@
                     android:layout_height="40dp"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="60dp"
-                    android:layout_marginTop="533dp"
+                    android:layout_marginTop="310dp"
                     android:background="@drawable/inputs"
                     android:gravity="center"
                     android:text="Filter"
@@ -203,15 +246,15 @@
             xmlns:map="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/map"
-            android:layout_below="@+id/container_relativeLayout"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="330dp"
-            tools:context=".GoogleMapsActivity"
-
-            android:layout_alignParentTop="true"
+            android:layout_height="307dp"
+            android:layout_below="@+id/container_relativeLayout"
             android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+
+            android:layout_marginTop="425dp"
+            tools:context=".GoogleMapsActivity"
             tools:ignore="RtlCompat" />
 
         <!--<FrameLayout-->

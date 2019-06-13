@@ -14,13 +14,18 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class
 
@@ -28,7 +33,7 @@ public class
 SavedCommentActivity extends AppCompatActivity {
 
     private RecyclerView savedCommentsRecyclerView ;
-    private DatabaseReference savedCommentRef  ,specificCommentsRef;
+    private DatabaseReference savedCommentRef  ,specificCommentsRef , user_Ref;
     private FirebaseRecyclerAdapter savedCommentRecyclerAdapter;
     public Context context;
     private FirebaseAuth mAuth;
@@ -56,9 +61,9 @@ SavedCommentActivity extends AppCompatActivity {
         /*_____________________________________________________________________________________________________________________________*/
 
 
-       // savedQuestionsRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("SavedQuestionComment").child(currentUserId);
+        // savedQuestionsRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("SavedQuestionComment").child(currentUserId);
         savedCommentRef=FirebaseDatabase.getInstance().getReference().child("users").child(currentUserId).child("SavedQuestionComment");
-
+        user_Ref = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserId);
         /*RecyclerView*/
         /*_____________________________________________________________________________________________________________________________*/
 
@@ -77,9 +82,8 @@ SavedCommentActivity extends AppCompatActivity {
         /*_____________________________________________________________________________________________________________________________*/
 
 
+
         displayAllSavedComments();
-
-
 
 
 
@@ -119,7 +123,7 @@ SavedCommentActivity extends AppCompatActivity {
                 holder.setSavedCommentDate(model.getQuestion_comment_date());
                 holder.setSavedCommentTime(model.getQuestion_comment_time());
                 holder.setSavedCommentUserName(model.getQuestion_comment_uFullName());
-                // holder.setSavedCommentUserNamePP(model.getQuestion_comment_uPP());
+                holder.setSavedCommentUserNamePP(model.getQuestion_comment_uPP());
 
                 holder.mView.findViewById(R.id.like_icon_btn).setVisibility(savedCommentsRecyclerView.INVISIBLE);
                 holder.mView.findViewById(R.id.dislike_icon_btn).setVisibility(savedCommentsRecyclerView.INVISIBLE);
@@ -187,7 +191,7 @@ SavedCommentActivity extends AppCompatActivity {
     /*View Holder static class*/
     /*_____________________________________________________________________________________________________________________________*/
 
-    public  static class  savedCommentViewHolder extends RecyclerView.ViewHolder
+    public class  savedCommentViewHolder extends RecyclerView.ViewHolder
     {
         View mView;
         LinearLayout Root;
@@ -228,14 +232,14 @@ SavedCommentActivity extends AppCompatActivity {
 
         }
 
-//        public  void setSavedCommentUserNamePP (String UserName_PP)
-//        {
-//            CircleImageView UserNamePP_ImageView =mView.findViewById(R.id.Question_user_pp);
-//            RequestOptions requestOptions=new RequestOptions();
-//            requestOptions.placeholder(R.drawable.profile_icon);
-//
-//            Glide.with(context).applyDefaultRequestOptions(requestOptions).load(UserName_PP).into(UserNamePP_ImageView);
-//        }
+        public  void setSavedCommentUserNamePP (String UserName_PP)
+        {
+            CircleImageView UserNamePP_ImageView =mView.findViewById(R.id.Question_user_pp);
+
+            //Glide.with(context).applyDefaultRequestOptions(requestOptions).load(UserName_PP).into(UserNamePP_ImageView);
+            Glide.with(getApplicationContext()).load(UserName_PP).into(UserNamePP_ImageView);
+
+        }
     }
     /*_____________________________________________________________________________________________________________________________*/
 

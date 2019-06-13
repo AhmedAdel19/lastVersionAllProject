@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -19,6 +21,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -58,9 +61,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-
+import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GoldenActivity extends MainActivity implements
@@ -68,8 +77,6 @@ public class GoldenActivity extends MainActivity implements
         GoogleApiClient.ConnectionCallbacks,//added
         GoogleApiClient.OnConnectionFailedListener,//added
         LocationListener //added
-
-
 {
 
     private GoogleMap mMap;
@@ -82,12 +89,25 @@ public class GoldenActivity extends MainActivity implements
     // private int ProximityRaduis = 10000;
     private Spinner sp_area , sp_category , sp_area_popup , sp_category_popup; //spinner
     private ArrayAdapter<String> arrayAdapter ;
-    private DatabaseReference AbuEl3orif_DB_Ref,db ,db2;
+    private DatabaseReference AbuEl3orif_DB_Ref,db ,db2 , AbuEl3orifRefFinal;
     private Button btn_filter;
     String selected_Area , selected_category;
     private Marker marker;
     private EditText addressField;
     private ImageView search;
+
+    ArrayList<ArrayList<ArrayList<String>>> commentMap2 = new ArrayList<>();
+
+
+    HashMap<String , Integer> userCalcLikes ;
+    HashMap<String , Integer> userCalcLikesTop3;
+
+    HashMap<String , HashMap< String , Integer>> userCalcArea = new  HashMap<String , HashMap< String , Integer>>();
+    HashMap<String , HashMap< String , Integer>> userCalcAreaTop3 = new  HashMap<String , HashMap< String , Integer>>();
+
+
+    String  SingleAreaName , SingleAreaUserId , UserNameOfAllItsComment , commentsLilkeCount  , commentsDisLilkeCount  ;
+
 
     Double categoryLat;
     Double categoryLng;
@@ -105,28 +125,35 @@ public class GoldenActivity extends MainActivity implements
     private TextView navUsername;
 
     private String CurrentUserId ;
-    private DatabaseReference userRef;
+    private DatabaseReference userRef , calcRef;
     private FirebaseAuth mAuth;//to check user authentication loggedin or not
     private Dialog AskQuetionDialog;
     private TextView textCloseIcon;
-    private Button btn_que_filtter,btn_createPost;
+    private Button btn_que_filtter;
     //-------------------------------------------------
-//My Work
+    private ArrayList<String> AllAreaNamesComments = new ArrayList<String>();
+
+
+    //My Work
     private EditText mSearchField;
-    private ImageButton mSearchBtn;
+    private EditText locationSearch;
+
+    private ImageButton mSearchBtn , mSearchMapBtn;
     private RecyclerView mResultList;
     public Context context;
 
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_golden);
 //My Work
         mSearchField = (EditText) findViewById(R.id.search_field);
+        locationSearch = findViewById(R.id.search_map_field);
         mSearchBtn = (ImageButton) findViewById(R.id.search_btn);
-
+        mSearchMapBtn = findViewById(R.id.search_map_btn);
         mResultList = (RecyclerView) findViewById(R.id.result_list);
         mResultList.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -134,15 +161,30 @@ public class GoldenActivity extends MainActivity implements
         linearLayoutManager.setStackFromEnd(true);
         mResultList.setLayoutManager(linearLayoutManager);
         // mResultList.setLayoutManager(new LinearLayoutManager(this));
-        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+        mSearchBtn.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
+                mMap.clear();
                 String searchText = mSearchField.getText().toString().toLowerCase();
                 firebaseUserSearch(searchText);
+                mSearchField.setText("");
             }
 
 
         });
+
+
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                Toast.makeText(getApplicationContext(), "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrRRRRRRRRRRRRRRRRRRRRRRRRRrrrrrrrrrrrr", Toast.LENGTH_SHORT).show();
+//            }
+//       }, 30000);
 
 
 
@@ -158,6 +200,10 @@ public class GoldenActivity extends MainActivity implements
 
 
         userRef = FirebaseDatabase.getInstance().getReference().child("users");
+        calcRef =FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("CalcAbuEl3orif");
+        AbuEl3orifRefFinal = FirebaseDatabase.getInstance().getReference().child("finalAbuEl3orifs");
+
+
         mAuth = FirebaseAuth.getInstance();//to check user authentication loggedin or not
 
         CurrentUserId = mAuth.getCurrentUser().getUid();
@@ -188,19 +234,7 @@ public class GoldenActivity extends MainActivity implements
 
         navProfileImage = nav_view.findViewById(R.id.nav_profile_img);
         navUsername = nav_view.findViewById(R.id.nav_username);
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                user_class user = dataSnapshot.getValue(user_class.class);
 
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         userRef.child(CurrentUserId).addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -422,6 +456,21 @@ public class GoldenActivity extends MainActivity implements
 
         //--------------------------------------------------------------------------------------------------------------
 
+        //--------------------------- Button Sreach Google Map-----------------------------------------------------------------------------------
+        mSearchMapBtn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                mMap.clear();
+                onMapSearch();
+                locationSearch.setText("");
+            }
+        });
+
+        //--------------------------------------------------------------------------------------------------------------
+
+
         //------------------btn filter method------------------------------------------------------
 
         btn_filter.setOnClickListener(new View.OnClickListener()
@@ -452,7 +501,7 @@ public class GoldenActivity extends MainActivity implements
 
                             mMap.addMarker(markerOptions);
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                            mMap.animateCamera(CameraUpdateFactory.zoomBy(15));
+                            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                         }
                     }
 
@@ -506,7 +555,7 @@ public class GoldenActivity extends MainActivity implements
                             @Override
                             public void onClick(View v) {
                                 final String searchKey=getRef(position).getKey();
-                                Toast.makeText(getApplicationContext(), "El Galyyyyyyyyyyyy", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "El Galyyyyyyyyyyyy", Toast.LENGTH_SHORT).show();
                                 db2.child(searchKey).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -525,11 +574,11 @@ public class GoldenActivity extends MainActivity implements
                                         }
                                         category_marker = mMap.addMarker(userMarkerOptions);
                                         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                                        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                                        mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
                                         Log.e("ssssssssssssss",catName);
                                         Log.e("ssssssssssssss",""+categoryLat);
                                         Log.e("ssssssssssssss",""+categoryLng);
-                                        Toast.makeText(getApplicationContext(), "El Galyyyyyyyyyyyy Tanyyyyyyyyyyyyyyyyyy", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(getApplicationContext(), "El Galyyyyyyyyyyyy Tanyyyyyyyyyyyyyyyyyy", Toast.LENGTH_SHORT).show();
                                     }
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -643,125 +692,13 @@ public class GoldenActivity extends MainActivity implements
 
 
     }
-//    public void onClick(View v)
-//    {
-//        String hospital = "hospital" , school = "school" , resturant = "resturant";
-//        Object transferData[] = new Object[2];
-//        getNearbyPlaces getNearbyPlaces = new getNearbyPlaces();
-//
-//        switch (v.getId())
-//        {
-//            case R.id.search_place_icon:
-//                EditText address = findViewById(R.id.search_place_bar);
-//                String address_text = address.getText().toString();
-//
-//                List<Address> addressList = null;
-//
-//                MarkerOptions Addrees_marker_options = new MarkerOptions();
-//
-//                if(!TextUtils.isEmpty(address_text))
-//                {
-//                    Geocoder geocoder = new Geocoder(this);
-//
-//                    try
-//                    {
-//                        addressList = geocoder.getFromLocationName(address_text , 6);
-//
-//                        if(addressList != null)
-//                        {
-//                            for(int i =0 ; i<addressList.size() ; i++)
-//                            {
-//                                Address single_address = addressList.get(i);
-//
-//                                LatLng latLng = new LatLng(single_address.getLatitude() , single_address.getLongitude());
-//
-//                                Addrees_marker_options.position(latLng);
-//                                Addrees_marker_options.title(address_text);
-//                                Addrees_marker_options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-//                                mMap.addMarker(Addrees_marker_options);
-//                                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//                                mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
-//
-//
-//                            }
-//                        }
-//                        else
-//                        {
-//                            Toast.makeText(this, "Loaction not found try again...", Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                    } catch (IOException e)
-//                    {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                else
-//                {
-//                    Toast.makeText(this, "Please write any place...", Toast.LENGTH_SHORT).show();
-//                }
-//                break;
-//
-//
-//            case R.id.hospital_category_icon:
-//                mMap.clear();
-//                String url1 = getUrl( latitude , longitude , hospital);
-//                transferData[0] = mMap;
-//                transferData[1] = url1;
-//
-//                Toast.makeText(this, "searching nearby hospitals ...", Toast.LENGTH_SHORT).show();
-//                Toast.makeText(this, "Showing nearby hospitals ...", Toast.LENGTH_SHORT).show();
-//
-//                break;
-//
-//
-//            case R.id.school_category_icon:
-//                mMap.clear();
-//                String url2 = getUrl( latitude , longitude , school);
-//                transferData[0] = mMap;
-//                transferData[1] = url2;
-//
-//                Toast.makeText(this, "searching nearby schools ...", Toast.LENGTH_SHORT).show();
-//                Toast.makeText(this, "Showing nearby shcools ...", Toast.LENGTH_SHORT).show();
-//
-//                break;
-//
-//
-//            case R.id.resturant_category_icon:
-//                mMap.clear();
-//                String url3 = getUrl( latitude , longitude , resturant);
-//                transferData[0] = mMap;
-//                transferData[1] = url3;
-//
-//                Toast.makeText(this, "searching nearby resturants ...", Toast.LENGTH_SHORT).show();
-//                Toast.makeText(this, "Showing nearby resturants ...", Toast.LENGTH_SHORT).show();
-//
-//                break;
-//
-//
-//        }
-//    }
 
-
-//    private String getUrl(double latitude ,double longitude ,String nearbyPlace)
-//    {
-//        StringBuilder googleUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-//        googleUrl.append("location=" + latitude + "," + longitude);
-//        googleUrl.append("&raduis=" + ProximityRaduis);
-//        googleUrl.append("&type=" + nearbyPlace);
-//        googleUrl.append("&sensor=true");
-//        googleUrl.append("&key=" + "AIzaSyD2KNlfADCtWGpLJdWJOS8P66wRSHE51sk");
-//
-//        Log.d("GoogleMapsActivity" , "url : " + googleUrl.toString());
-//
-//        return googleUrl.toString();
-//
-//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if(ContextCompat.checkSelfPermission(this , Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if(ContextCompat.checkSelfPermission(this ,Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
 
             //call buid google api client method
@@ -1170,13 +1107,82 @@ public class GoldenActivity extends MainActivity implements
 
     }
     private void sendUserToProfileActivity() {
-        Intent goToProfileActivity = new Intent(getApplicationContext(),Profile2.class);
+        Intent goToProfileActivity = new Intent(getApplicationContext(),UserProfileActivity.class);
         startActivity(goToProfileActivity);
 
     }
 
-    //---------------------------------------------------------------------------------------------------
-    //----------------------------------------------------------------
+
+
+    //-----------------------------------------sreach Google Map----------------------------------------------------------
+    public void onMapSearch()
+    {
+        String location = locationSearch.getText().toString().toLowerCase();
+        List<Address> addressList = null;
+
+        if(!TextUtils.isEmpty(location))
+        {
+            Geocoder geocoder = new Geocoder(this);
+            try
+            {
+                addressList = geocoder.getFromLocationName(location, 6);
+
+                if(addressList != null)
+                {
+                    for(int i = 0 ; i < addressList.size() ; i++)
+                    {
+                        Address address = addressList.get(i);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(latLng);
+                        markerOptions.title("here your Search Result");
+                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        mMap.addMarker(markerOptions);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                        mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+                    }
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Sorry This Location Not Found ..", Toast.LENGTH_SHORT).show();
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "Please enter place name to search about ...", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    public static HashMap<String, Integer> sortByValue(HashMap <String , Integer> hm)
+    {
+        // Create a list from elements of HashMap
+        List<Map.Entry<String, Integer> > list =
+                new LinkedList<Map.Entry<String, Integer> >(hm.entrySet());
+
+        // Sort the list
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2)
+            {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+
+        // put data from sorted list to hashmap
+        HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
 
 
 }

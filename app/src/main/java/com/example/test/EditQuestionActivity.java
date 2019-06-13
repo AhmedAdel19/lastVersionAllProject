@@ -77,23 +77,25 @@ public class EditQuestionActivity extends AppCompatActivity
             {
                 if(dataSnapshot.exists())
                 {
-                     UserPP = dataSnapshot.child("questionUserPP").getValue().toString();
-                     UserName = dataSnapshot.child("questionUserName").getValue().toString();
-                     QuestionDateStr = dataSnapshot.child("questionDate").getValue().toString();
-                     QuestionTimeStr= dataSnapshot.child("questionTime").getValue().toString();
-                     QuestionDescriptionStr = dataSnapshot.child("questionContent").getValue().toString();
+                    UserPP = dataSnapshot.child("questionUserPP").getValue().toString();
+                    UserName = dataSnapshot.child("questionUserName").getValue().toString();
+                    QuestionDateStr = dataSnapshot.child("questionDate").getValue().toString();
+                    QuestionTimeStr= dataSnapshot.child("questionTime").getValue().toString();
+                    QuestionDescriptionStr = dataSnapshot.child("questionContent").getValue().toString();
                     DBuserId = dataSnapshot.child("questionUserId").getValue().toString();
 
                     RequestOptions requestOptions = new RequestOptions();
                     requestOptions.placeholder(R.drawable.profile_icon);
                     //Picasso.with(ctx).load(question_uPP).into(q_Upp);
-                    Glide.with(getApplicationContext()).applyDefaultRequestOptions(requestOptions).load(UserPP).into(userQuestionPP);
+                    //Glide.with(getApplicationContext()).applyDefaultRequestOptions(requestOptions).load(UserPP).into(userQuestionPP);
+                    Glide.with(getApplicationContext()).load(UserPP).into(userQuestionPP);
+
 
                     userQuestionName.setText(UserName);
                     QuestionDate.setText("  "+QuestionDateStr);
                     QuestionTime.setText("  "+QuestionTimeStr);
                     QuestionDescription.setText(QuestionDescriptionStr);
-                   // QuestionEditContent.setText(QuestionDescriptionStr);
+                    // QuestionEditContent.setText(QuestionDescriptionStr);
 
                     if(currentUserId.equals(DBuserId))
                     {

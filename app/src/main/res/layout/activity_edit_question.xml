@@ -10,30 +10,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:orientation="vertical"
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginBottom="8dp"
-
-        android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:background="#C5D9DF">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
-            android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/Question_user_pp_edit"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
+                android:layout_marginLeft="4dp"
                 app:civ_border_color="@color/colorPrimary"
-                app:civ_border_width="2dp" />
+                app:civ_border_width="2dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,20 +43,20 @@
                     android:id="@+id/Question_username_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="start"
                     android:text="user name"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="5dp"
                     android:textAlignment="textStart"
                     android:textColor="@color/blueDark"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:gravity="start" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
                     android:orientation="horizontal"
+                    android:layout_marginLeft="5dp"
                     android:padding="2dp">
 
                     <TextView
@@ -65,25 +64,25 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="asked question at"
-                        android:textColor="#09c6df"
+                        android:textStyle="bold"
                         android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textColor="#398075"/>
 
                     <TextView
                         android:id="@+id/Question_date_edit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Date"
-                        android:textColor="#000"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:textColor="#000"/>
 
                     <TextView
                         android:id="@+id/Question_time_edit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Time"
-                        android:textColor="#000"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:textColor="#000"/>
 
                 </LinearLayout>
 
@@ -96,16 +95,16 @@
             android:id="@+id/Question_description_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:textSize="16sp"
+            android:text="Question Description"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="3dp"
+            android:layout_gravity="center"
             android:layout_marginBottom="20dp"
 
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="5dp"
             android:padding="5dp"
-            android:text="Question Description"
-            android:textColor="#000"
-            android:textSize="16sp" />
+            android:textColor="#000"/>
 
         <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
@@ -207,12 +206,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="159dp"
+        android:orientation="vertical"
+        android:layout_marginTop="200dp"
         android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginBottom="8dp"
-        android:orientation="vertical">
+        android:layout_alignParentTop="true"
+        android:background="#F4F7F8">
 
 
         <!--<EditText-->
@@ -232,49 +232,49 @@
             android:id="@+id/Button_save_updated_quetion"
             android:layout_width="250dp"
             android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/inputs"
             android:text="Edit question"
-            android:textColor="@color/primaryText"
+            android:layout_marginTop="40dp"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:textColor="@color/primaryText"
+            android:background="@drawable/inputs"/>
 
         <Button
             android:id="@+id/Button_delete_updated_quetion"
             android:layout_width="250dp"
             android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/inputs_delete"
             android:text="delete question"
-            android:textColor="#fff"
+            android:layout_marginTop="20dp"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:textColor="#fff"
+            android:background="@drawable/inputs_delete"/>
 
         <Button
             android:id="@+id/Button_comments_updated_quetion"
             android:layout_width="250dp"
             android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/inputs"
             android:text="show question comments"
-            android:textColor="@color/primaryText"
+            android:layout_marginTop="20dp"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:textColor="@color/primaryText"
+            android:background="@drawable/inputs"/>
 
         <Button
             android:id="@+id/Button_cancel_updated_quetion"
             android:layout_width="250dp"
             android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/inputs_delete"
             android:text="Back"
-            android:textColor="#fff"
+            android:layout_marginTop="20dp"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:textColor="#fff"
+            android:background="@drawable/inputs_delete"/>
 
     </LinearLayout>
 

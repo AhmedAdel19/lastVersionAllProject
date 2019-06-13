@@ -71,9 +71,7 @@ public class Login_Activity extends AppCompatActivity
         user_email_login = findViewById(R.id.login_email_input);
         user_password_login = findViewById(R.id.login_password_input);
         login_button = findViewById(R.id.login_btn);
-//        profile_btn_1 = findViewById(R.id.profile1_btn);
-//        profile_btn_2 = findViewById(R.id.profile2_btn);
-//        profile_btn_3 = findViewById(R.id.profile3_btn);
+
         register_link = findViewById(R.id.login_register_link);
         loginFace_btn = findViewById(R.id.face_logo);
         facePic = findViewById(R.id.profile_img);
@@ -114,132 +112,12 @@ public class Login_Activity extends AppCompatActivity
         loginByLayout.startAnimation(translateAnim);
 
         /*_________________________________________________________________________________________________*/
-        loginFace_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginWithFace();
-            }
-        });
-        //link to send user to Profiles activity--------------------------------
-//        profile_btn_1.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                sendUserToProfile1Actiity();
-//            }
-//        });
-//        profile_btn_2.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                sendUserToProfile2Actiity();
-//            }
-//        });
-//        profile_btn_3.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                sendUserToProfile3Actiity();
-//            }
-//        });
-        //-----------------------------------------------------------------------
+
+
     }
     //-------------facebook login method-----------------------------//////////////////////////////////////////////////////
 
-    // login with facebook
-    public void loginWithFace(){
-        URL profile_pic;
-        // Initialize Facebook Login button
-        mCallbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().logInWithReadPermissions(Login_Activity.this, Arrays.asList("email","public_profile"));
-        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
-                String token = loginResult.getAccessToken().getToken();
-                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                       // Bundle facebookData = getFacebookData(object);
-                        getFacebookData(object);
-                    }
-                });
-            }
 
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-                // ...
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-                // ...
-            }
-        });
-
-    }
-
-    public void getFacebookData(JSONObject object) {
-        try {
-            URL profile_pic = new URL("https://grahp.facebook.com/"+object.getString("id")+"/picture?width=250&height=250");
-            Picasso.with(this).load(profile_pic.toString()).into(facePic);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Pass the activity result back to the Facebook SDK
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            updateUI();
-        }
-    }
-
-    private void updateUI() {
-      //  sendUserToProfile3Actiity();
-        Toast.makeText(getApplicationContext(),"you are logged in now",Toast.LENGTH_LONG).show();
-    }
-    private void handleFacebookAccessToken(AccessToken token) {
-     //   Log.d(TAG, "handleFacebookAccessToken:" + token);
-
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                    //        Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                          //  Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
-    }
 
 
     //-------------user login method-----------------------------
@@ -347,7 +225,7 @@ public class Login_Activity extends AppCompatActivity
 
     private void sendUserToSelverActivity()
     {
-        Intent SelverActivityIntent = new Intent(getApplicationContext() , SelverActivity.class);
+        Intent SelverActivityIntent = new Intent(getApplicationContext() , SilverActivity.class);
         SelverActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(SelverActivityIntent);
         finish();

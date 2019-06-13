@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -28,6 +29,7 @@ public class Manage_Areas extends AppCompatActivity {
     DatabaseReference AreaRef;
     private Toolbar manage_a_toolbar;
     private ImageView addAreaLink;
+    private Button adminBtn;
     final List<Area_class> areas = new ArrayList<Area_class>();
     ListView All_Areas;
 
@@ -35,7 +37,7 @@ public class Manage_Areas extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manage_areas);
-
+        adminBtn = findViewById(R.id.adminBack);
         manage_a_toolbar = findViewById(R.id.manage_area_toolbar);
 
         All_Areas = findViewById(R.id.allAreas);
@@ -93,12 +95,23 @@ public class Manage_Areas extends AppCompatActivity {
                 SendToAddAreaActivity();
             }
         });
+        adminBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SendToAdminActivity();
+            }
+        });
     }
 
     private void SendToAddAreaActivity() {
         Intent AddAreaActivity = new Intent(Manage_Areas.this, Add_Area_Activirt.class);
         startActivity(AddAreaActivity);
 
+    }
+    private void SendToAdminActivity() {
+        Intent adminAct = new Intent(Manage_Areas.this, AdminActivity.class);
+        startActivity(adminAct);
+        finish();
     }
 
     @Override

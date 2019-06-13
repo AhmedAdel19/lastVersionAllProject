@@ -86,7 +86,7 @@ public class setup_user_Activity extends AppCompatActivity
         setup_username = findViewById(R.id.setup_user_username);
         setup_fullname = findViewById(R.id.setup_user_fullname);
         setup_address = findViewById(R.id.setup_user_Address);
-        get_location_btn = findViewById(R.id.setup_user_location);
+        // get_location_btn = findViewById(R.id.setup_user_location);
         setup_save_btn = findViewById(R.id.setup_user_save_btn);
         storageReference= FirebaseStorage.getInstance().getReference("uploads");
         loadingBar = new ProgressDialog(this);
@@ -153,16 +153,16 @@ public class setup_user_Activity extends AppCompatActivity
         //--------------------------------------------------------------------------------------
 
         //-----------------get Location of user-------------------------------------------------
-        get_location_btn.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent goToMapGetUserLocation = new Intent(setup_user_Activity.this , Maps_get_user_location.class);
-                startActivity(goToMapGetUserLocation);
-
-            }
-        });
+//        get_location_btn.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                Intent goToMapGetUserLocation = new Intent(setup_user_Activity.this , Maps_get_user_location.class);
+//                startActivity(goToMapGetUserLocation);
+//
+//            }
+//        });
 
         /*___________________________________ area spinner ____________________________________*/
         areaRef=FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("Areas");
@@ -416,91 +416,91 @@ public class setup_user_Activity extends AppCompatActivity
             loadingBar.setMessage("please wait until your account setup complete...");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
-            get_location_btn.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-
-                    AlertDialog alertDialog = new AlertDialog.Builder(setup_user_Activity.this).create();
-                    alertDialog.setTitle("Pick Area Location");
-                    alertDialog.setIcon(R.drawable.location_icon);
-                    LayoutInflater layoutInflater = LayoutInflater.from(setup_user_Activity.this);
-                    View promptView = layoutInflater.inflate(R.layout.dialogmap, null);
-                    alertDialog.setView(promptView);
-
-                    MapView mMapView =  promptView.findViewById(R.id.mapView);
-                    MapsInitializer.initialize(setup_user_Activity.this);
-
-                    mMapView.onCreate(alertDialog.onSaveInstanceState());
-                    mMapView.onResume();
-
-
-                    mMapView.getMapAsync(new OnMapReadyCallback()
-                    {
-                        @Override
-                        public void onMapReady(final GoogleMap googleMap)
-                        {
-                            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                                @Override
-                                public void onMapClick(LatLng latLng)
-                                {
-                                    // Creating a marker
-                                    MarkerOptions markerOptions = new MarkerOptions();
-
-                                    // Setting the position for the marker
-                                    markerOptions.position(latLng);
-
-                                    // Setting the title for the marker.
-                                    // This will be displayed on taping the marker
-                                    markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-
-                                    // Clears the previously touched position
-                                    googleMap.clear();
-
-                                    // Animating to the touched position
-                                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
-                                    // Placing a marker on the touched position
-                                    googleMap.addMarker(markerOptions);
-
-                                    areaLat = latLng.latitude;
-                                    areaLng = latLng.longitude;
-
-                                }
-                            });
-                        }
-                    });
-
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Add Location", new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-
-                            Toast.makeText(setup_user_Activity.this, "Location has been picked successuflly...", Toast.LENGTH_LONG).show();
-
-                        }
-
-                    });
-
-
-                    alertDialog.show();
-
-                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
-                    //alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor());
-
-
-                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0,0,150,0);
-
-                    alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setLayoutParams(params);
-
-                }
-            });
+//            get_location_btn.setOnClickListener(new View.OnClickListener()
+//            {
+//                @Override
+//                public void onClick(View v)
+//                {
+//
+//                    AlertDialog alertDialog = new AlertDialog.Builder(setup_user_Activity.this).create();
+//                    alertDialog.setTitle("Pick Area Location");
+//                    alertDialog.setIcon(R.drawable.location_icon);
+//                    LayoutInflater layoutInflater = LayoutInflater.from(setup_user_Activity.this);
+//                    View promptView = layoutInflater.inflate(R.layout.dialogmap, null);
+//                    alertDialog.setView(promptView);
+//
+//                    MapView mMapView =  promptView.findViewById(R.id.mapView);
+//                    MapsInitializer.initialize(setup_user_Activity.this);
+//
+//                    mMapView.onCreate(alertDialog.onSaveInstanceState());
+//                    mMapView.onResume();
+//
+//
+//                    mMapView.getMapAsync(new OnMapReadyCallback()
+//                    {
+//                        @Override
+//                        public void onMapReady(final GoogleMap googleMap)
+//                        {
+//                            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//                                @Override
+//                                public void onMapClick(LatLng latLng)
+//                                {
+//                                    // Creating a marker
+//                                    MarkerOptions markerOptions = new MarkerOptions();
+//
+//                                    // Setting the position for the marker
+//                                    markerOptions.position(latLng);
+//
+//                                    // Setting the title for the marker.
+//                                    // This will be displayed on taping the marker
+//                                    markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+//
+//                                    // Clears the previously touched position
+//                                    googleMap.clear();
+//
+//                                    // Animating to the touched position
+//                                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+//
+//                                    // Placing a marker on the touched position
+//                                    googleMap.addMarker(markerOptions);
+//
+//                                    areaLat = latLng.latitude;
+//                                    areaLng = latLng.longitude;
+//
+//                                }
+//                            });
+//                        }
+//                    });
+//
+//                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Add Location", new DialogInterface.OnClickListener()
+//                    {
+//                        public void onClick(DialogInterface dialog, int which)
+//                        {
+//
+//                            Toast.makeText(setup_user_Activity.this, "Location has been picked successuflly...", Toast.LENGTH_LONG).show();
+//
+//                        }
+//
+//                    });
+//
+//
+//                    alertDialog.show();
+//
+//                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+//                    //alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor());
+//
+//
+//                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+//
+//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                            LinearLayout.LayoutParams.WRAP_CONTENT,
+//                            LinearLayout.LayoutParams.WRAP_CONTENT);
+//                    params.setMargins(0,0,150,0);
+//
+//                    alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setLayoutParams(params);
+//
+//                }
+//            });
 
 
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -16,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Edit_Delete_All_Categories extends AppCompatActivity {
 
-    DatabaseReference categoryPlaceRef;
+    DatabaseReference categoryPlaceRef , allPlacesRef ,categoriesRef;
 
 
     public TextView cat_place_name, cat_place_lat, cat_Place_long, cat_place_type, cat_place_rate;
@@ -45,6 +46,11 @@ public class Edit_Delete_All_Categories extends AppCompatActivity {
         final double placeLongitude = bundle.getDouble("category_place_long");
         final int placeType = bundle.getInt("category_place_type");
         final int placeRate = bundle.getInt("category_place_rate");
+        /************************************ Delete Handle References *******************************/
+        categoriesRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("categories").child(categoryName).child(placeName);
+        allPlacesRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("AllPlaces").child(placeName);
+        /*********************************************************************************************/
+
 
         categoryPlaceRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("Areas").child(AreaName).child("categories").child(categoryName).child(placeName);
 
@@ -83,6 +89,7 @@ public class Edit_Delete_All_Categories extends AppCompatActivity {
 
                         startActivity(editPlace);
 
+
                     }
                 });
 
@@ -94,6 +101,7 @@ public class Edit_Delete_All_Categories extends AppCompatActivity {
                     {
                         Intent a = new Intent(Edit_Delete_All_Categories.this , Manage_categories_childern.class);
                         startActivity(a);
+
                     }
                 });
 
@@ -102,9 +110,15 @@ public class Edit_Delete_All_Categories extends AppCompatActivity {
                     @Override
                     public void onClick(View v)
                     {
+                        categoriesRef.removeValue();
+                        allPlacesRef.removeValue();
                         categoryPlaceRef.removeValue();
+
                         Intent back = new Intent(Edit_Delete_All_Categories.this,Manage_Areas.class);
+                        Toast.makeText(getApplicationContext(),"PLace Deleted",Toast.LENGTH_LONG).show();
+
                         startActivity(back);
+                        finish();
                     }
                 });
 

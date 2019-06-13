@@ -24,6 +24,7 @@
                     android:orientation="vertical">
 
                     <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/userProfileImage"
                         android:layout_width="130dp"
                         android:layout_height="150dp"
                         android:src="@drawable/profile"
@@ -187,16 +188,16 @@
 
 
             </LinearLayout>
-            <Button
-                android:id="@+id/profile_follow_btn2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/buttonstyle_purple_gradien"
-                android:text="Follow"
-                android:textColor="#fff" />
+            <!--<Button-->
+            <!--android:id="@+id/profile_follow_btn2"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:layout_marginTop="15dp"-->
+            <!--android:layout_marginBottom="20dp"-->
+            <!--android:background="@drawable/buttonstyle_purple_gradien"-->
+            <!--android:text="Follow"-->
+            <!--android:textColor="#fff" />-->
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

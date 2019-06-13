@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,6 +23,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class UserProfileActivity extends AppCompatActivity {
 
     private TextView bio_txt ,username ,email,address,area ,phone_txt;
@@ -29,9 +32,10 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button save_bio_btn ,cancel_bio_btn ,editProfileBtn ;
     private EditText bio_edit_txt;
     private DatabaseReference userRef ;
+    private CircleImageView user_pp;
     private FirebaseAuth mAuth;
-    private String currentUserId ,userNameStr ,emailStr, addressStr ,bioStr ,areaStr ,phoneStr,userType;
-    private Button follow2 = findViewById(R.id.profile_follow_btn2);
+    private String currentUserId ,userNameStr ,emailStr, addressStr ,bioStr ,areaStr ,phoneStr ,userProfileStr ,userType;
+    // private Button follow2 = findViewById(R.id.profile_follow_btn2);
 
 
 
@@ -53,20 +57,23 @@ public class UserProfileActivity extends AppCompatActivity {
         area=findViewById(R.id.profile_area_id);
         bio_txt=findViewById(R.id.profile_bio_id);
         phone_txt=findViewById(R.id.profile_phone_id);
+        user_pp = findViewById(R.id.userProfileImage);
 
 
 
         userRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                     userNameStr =dataSnapshot.child("username").getValue().toString();
-                     emailStr =dataSnapshot.child("email").getValue().toString();
-                     addressStr=dataSnapshot.child("address").getValue().toString();
-                     areaStr =dataSnapshot.child("UserArea").getValue().toString();
-                     bioStr=dataSnapshot.child("Bio").getValue().toString();
-                     phoneStr=dataSnapshot.child("phone").getValue().toString();
-                     userType=dataSnapshot.child("user_type").getValue().toString();
+                if(dataSnapshot.exists())
+                {
+                    userNameStr =dataSnapshot.child("username").getValue().toString();
+                    emailStr =dataSnapshot.child("email").getValue().toString();
+                    addressStr=dataSnapshot.child("address").getValue().toString();
+                    areaStr =dataSnapshot.child("UserArea").getValue().toString();
+                    bioStr=dataSnapshot.child("Bio").getValue().toString();
+                    phoneStr=dataSnapshot.child("phone").getValue().toString();
+                    userType=dataSnapshot.child("user_type").getValue().toString();
+                    userProfileStr=dataSnapshot.child("ImageUrl").getValue().toString();
 
                     username.setText(userNameStr);
                     email.setText(emailStr);
@@ -74,6 +81,14 @@ public class UserProfileActivity extends AppCompatActivity {
                     area.setText(areaStr);
                     bio_txt.setText(bioStr);
                     phone_txt.setText(phoneStr);
+
+                    Glide.with(getApplicationContext()).load(userProfileStr).into(user_pp);
+
+
+
+                }
+
+
 
 
 
@@ -89,14 +104,14 @@ public class UserProfileActivity extends AppCompatActivity {
         /*___________________________________________________________________*/
 
         /*_____________________      Follow      _____________________________*/
-        if(userType !="2"){
-            follow2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-        }
+//        if(userType !="2"){
+//            follow2.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                }
+//            });
+//        }
 
         /*___________________________________________________________________*/
 
@@ -113,6 +128,8 @@ public class UserProfileActivity extends AppCompatActivity {
                 editProfileActivityIntent.putExtra("area" ,areaStr);
                 editProfileActivityIntent.putExtra("address" ,addressStr);
                 editProfileActivityIntent.putExtra("bio" ,bioStr);
+                editProfileActivityIntent.putExtra("pp" ,userProfileStr);
+
                 startActivity(editProfileActivityIntent);
 
             }

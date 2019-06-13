@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.test.Notifications.Data;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -43,16 +45,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class QuestionActivity extends AppCompatActivity
 {
     private Toolbar update_q_toolbar;
-    private DatabaseReference userRef  , QuestionRef  ,CategoryQuestionsRef , ReactsRef ;
+    private DatabaseReference userRef  , QuestionRef  ,CategoryQuestionsRef , ReactsRef , finalAbuEl3orifRef ;
     private FirebaseAuth mAuth ;
-    private String CurrentuserId , userPP , userUsername , QuestionStringContent , currentQuestionDate , currentQuestionTime ,PostRandomKey ;
+    private String  GoldenName , GoldenPP , SilverName , SilverPP ,BronzeName , BronzePP , CurrentuserId , userPP  , userUsername , QuestionStringContent , currentQuestionDate , currentQuestionTime ,PostRandomKey ;
     private EditText questionContent;
     private Button Question_submit_btn;
     private ProgressDialog loadingBar;
+    private TextView  golden_name , silver_name , bronze_name;
     private RecyclerView QuestionCategoryList;
     private FirebaseRecyclerAdapter<Questions, QuestionsViewHolder> adapter;
     public Context context;
-    private  CircleImageView q_Upp;
+    private  CircleImageView q_Upp ,golden_pp , silver_pp , bronze_pp;
     Boolean likeChacker = false;
     Boolean dislikeChecker = false;
 
@@ -81,6 +84,16 @@ public class QuestionActivity extends AppCompatActivity
         Question_submit_btn = findViewById(R.id.ask_question_btn);
         loadingBar = new ProgressDialog(this);
 
+        finalAbuEl3orifRef = FirebaseDatabase.getInstance().getReference().child("finalAbuEl3orifs");
+
+        golden_pp = findViewById(R.id.Golden_user_pp);
+        bronze_pp = findViewById(R.id.Bronze_user_pp);
+        silver_pp = findViewById(R.id.Silver_user_pp);
+
+        golden_name = findViewById(R.id.Golden_Name);
+        bronze_name = findViewById(R.id.Bronze_Name);
+        silver_name = findViewById(R.id.Silver_Name);
+
 
         //---------------------INTENT DATA-------------------------
         Bundle bundle=getIntent().getExtras();
@@ -90,6 +103,69 @@ public class QuestionActivity extends AppCompatActivity
 
         //---------------------------------------------------------
         CategoryQuestionsRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("Questions").child(selectedArea).child(selectedCategory).child("categoryQuestions");
+
+
+
+        finalAbuEl3orifRef.child(selectedArea).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                if(dataSnapshot.exists())
+                {
+                    final String GoldenId = dataSnapshot.child("GoldenID").getValue().toString();
+                    final String SilverId = dataSnapshot.child("SilverID").getValue().toString();
+                    final String BronzeId = dataSnapshot.child("BronzeID").getValue().toString();
+
+
+                    userRef.addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                        {
+
+                            GoldenName = dataSnapshot.child(GoldenId).child("username").getValue().toString();
+                            GoldenPP = dataSnapshot.child(GoldenId).child("ImageUrl").getValue().toString();
+
+                            SilverName = dataSnapshot.child(SilverId).child("username").getValue().toString();
+                            SilverPP = dataSnapshot.child(SilverId).child("ImageUrl").getValue().toString();
+
+                            BronzeName = dataSnapshot.child(BronzeId).child("username").getValue().toString();
+                            BronzePP = dataSnapshot.child(BronzeId).child("ImageUrl").getValue().toString();
+
+                            golden_name.setText(GoldenName);
+                            silver_name.setText(SilverName);
+                            bronze_name.setText(BronzeName);
+
+                            Glide.with(getApplicationContext()).load(GoldenPP).into(golden_pp);
+                            Glide.with(getApplicationContext()).load(SilverPP).into(silver_pp);
+                            Glide.with(getApplicationContext()).load(BronzePP).into(bronze_pp);
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+
+                }
+
+
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
 
         Question_submit_btn.setOnClickListener(new View.OnClickListener()
@@ -104,7 +180,7 @@ public class QuestionActivity extends AppCompatActivity
                 currentQuestionDate = currentDate.format(calendarForDate.getTime());
 
                 Calendar calendarForTime = Calendar.getInstance();
-                SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+                SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
                 currentQuestionTime = currentTime.format(calendarForTime.getTime());
 
                 QuestionStringContent =questionContent.getText().toString();
@@ -174,8 +250,8 @@ public class QuestionActivity extends AppCompatActivity
             {
                 if(dataSnapshot.exists())
                 {
-                     userPP = dataSnapshot.child("profileImage").getValue().toString();
-                     userUsername = dataSnapshot.child("username").getValue().toString();
+                    userPP = dataSnapshot.child("ImageUrl").getValue().toString();
+                    userUsername = dataSnapshot.child("username").getValue().toString();
 
                 }
 
@@ -191,7 +267,7 @@ public class QuestionActivity extends AppCompatActivity
 
 
 
-  //==================================QUESTION LIST APPEAR HERE========================================//
+        //==================================QUESTION LIST APPEAR HERE========================================//
 //        FirebaseRecyclerAdapter<Questions , QuestionsViewHolder> firebaseRecyclerAdapter =
 //                new FirebaseRecyclerAdapter<Questions, QuestionsViewHolder>
 //                        (
@@ -214,7 +290,7 @@ public class QuestionActivity extends AppCompatActivity
 //                        return null;
 //                    }
 //                };
-     //=====================Dispaly All Users here====================================//
+        //=====================Dispaly All Users here====================================//
 
         //        FirebaseRecyclerOptions<Questions> options =
 //                new FirebaseRecyclerOptions.Builder<Questions>()
@@ -341,7 +417,7 @@ public class QuestionActivity extends AppCompatActivity
                     }
                 });
 
-                   //====Dislike btn=================
+                //====Dislike btn=================
                 holder.dislike_Question_btn.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
@@ -401,12 +477,12 @@ public class QuestionActivity extends AppCompatActivity
         QuestionCategoryList.setAdapter(adapter);
 
         //===================================================================================================
-     //================================================================================
+        //================================================================================
 
 
     }
 
-   private void DisplayAllUserQuestions()
+    private void DisplayAllUserQuestions()
     {
 ////        FirebaseRecyclerOptions<Questions> options =
 ////                new FirebaseRecyclerOptions.Builder<Questions>()
@@ -585,8 +661,8 @@ public class QuestionActivity extends AppCompatActivity
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot)
                 {
 
-                        QuestionCommentsCounter = (int) dataSnapshot.child(selArea).child(selCategory).child("categoryQuestions").child(QuestionKey).child("QuestionCategoryComments").getChildrenCount();
-                        commentsCount.setText(Integer.toString(QuestionCommentsCounter));
+                    QuestionCommentsCounter = (int) dataSnapshot.child(selArea).child(selCategory).child("categoryQuestions").child(QuestionKey).child("QuestionCategoryComments").getChildrenCount();
+                    commentsCount.setText(Integer.toString(QuestionCommentsCounter));
                 }
 
                 @Override
@@ -628,8 +704,10 @@ public class QuestionActivity extends AppCompatActivity
             requestOptions.placeholder(R.drawable.profile_icon);
 
             //Picasso.with(ctx).load(question_uPP).into(q_Upp);
-            Glide.with(context).applyDefaultRequestOptions(requestOptions).load(question_uPP).into(q_Upp);
-           // Picasso.with(ctx).load(question_uPP).placeholder(R.drawable.profile_icon).into(q_Upp);
+            // Glide.with(context).applyDefaultRequestOptions(requestOptions).load(question_uPP).into(q_Upp);
+            // Picasso.with(ctx).load(question_uPP).placeholder(R.drawable.profile_icon).into(q_Upp);
+            Glide.with(getApplicationContext()).load(question_uPP).into(q_Upp);
+
         }
 
 

@@ -69,7 +69,7 @@ public class Edit_Specific_Category_Place extends AppCompatActivity {
                     int place__rate = Integer.parseInt(dataSnapshot.child("category_rate").getValue().toString());
 
                     place_Name.setText(place__name);
-                    place_Rate.setText(place__rate);
+                    place_Rate.setText(String.valueOf( place__rate));
 
                 }
             }
@@ -186,9 +186,11 @@ public class Edit_Specific_Category_Place extends AppCompatActivity {
 
 
                 placeRef2.child(PlaceName).updateChildren(placeobj);
+                Toast.makeText(getApplicationContext(),"Place edited",Toast.LENGTH_LONG).show();
 
-                Intent a = new Intent(Edit_Specific_Category_Place.this, Edit_Delete_All_Categories.class);
+                Intent a = new Intent(Edit_Specific_Category_Place.this, Manage_Areas.class);
                 startActivity(a);
+                finish();
             }
         });
 

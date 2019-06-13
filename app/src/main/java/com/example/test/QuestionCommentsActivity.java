@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -50,6 +51,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,7 +61,7 @@ import static java.util.stream.Collectors.toMap;
 public class QuestionCommentsActivity extends AppCompatActivity
 {
     private Toolbar update_q_comment_toolbar;
-    private DatabaseReference userRef  , QuestionRef , calcRef ,CategoryQuestionsCommentsRef , ReactsRef ;
+    private DatabaseReference userRef , AbuEl3orifRefFinal , QuestionRef , calcRef ,CategoryQuestionsCommentsRef , ReactsRef ;
     private FirebaseAuth mAuth ;
     private String CurrentuserId , CommentuserPP , CommentuserUsername , QuestionCommentStringContent , currentQuestionCommentDate , currentQuestionCommentTime ,PostCommentRandomKey ;
     private EditText questionCommentContent;
@@ -78,7 +81,6 @@ public class QuestionCommentsActivity extends AppCompatActivity
     int likeCounter = 0 , dislikeCounter = 0 ;
 
     String  SingleAreaName , SingleAreaUserId , UserNameOfAllItsComment , commentsLilkeCount  , commentsDisLilkeCount  ;
-    String AllAreaKey , Area;
     ArrayList<ArrayList<ArrayList<String>>> commentMap2 = new ArrayList<>();
 
 
@@ -111,6 +113,7 @@ public class QuestionCommentsActivity extends AppCompatActivity
         QuestionRef =FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("Questions");
         calcRef =FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("CalcAbuEl3orif");
 
+        AbuEl3orifRefFinal = FirebaseDatabase.getInstance().getReference().child("finalAbuEl3orifs");
         ReactsRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("QuestionReacts");
         mAuth = FirebaseAuth.getInstance();
         CurrentuserId = mAuth.getCurrentUser().getUid();
@@ -272,7 +275,7 @@ public class QuestionCommentsActivity extends AppCompatActivity
                 currentQuestionCommentDate = currentDate.format(calendarForDate.getTime());
 
                 Calendar calendarForTime = Calendar.getInstance();
-                SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+                SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
                 currentQuestionCommentTime = currentTime.format(calendarForTime.getTime());
 
                 QuestionCommentStringContent =questionCommentContent.getText().toString();
@@ -351,6 +354,9 @@ public class QuestionCommentsActivity extends AppCompatActivity
 
                 }
 
+
+
+                //----------calling calc AbuEl3orif Method----------------------//
 
 
                 //----------get all user ids list--------------------//
@@ -450,27 +456,77 @@ public class QuestionCommentsActivity extends AppCompatActivity
 
                     for (Map.Entry<String, Integer> entry2 : childMap.entrySet())
                     {
-                        String childKey = entry2.getKey();
+                        final String childKey = entry2.getKey();
                         int childValue = entry2.getValue();
                         userCalcLikesTop3.put(childKey , childValue);
                         userCalcAreaTop3.put(AreaName , userCalcLikesTop3);
                         if(userCalcLikesTop3.size() == 1)
                         {
-                            userRef.child(childKey).child("user_type").setValue(3);
+
+                            HashMap AbuMap = new HashMap();
+                            AbuMap.put("GoldenID" , childKey);
+
+                            AbuEl3orifRefFinal.child(AreaName).updateChildren(AbuMap).addOnCompleteListener(new OnCompleteListener() {
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+
+                                }
+                            });
+
+
+
                         }
                         if(userCalcLikesTop3.size() == 2)
                         {
-                            userRef.child(childKey).child("user_type").setValue(4);
+
+                            HashMap AbuMap = new HashMap();
+                            AbuMap.put("SilverID" , childKey);
+
+                            AbuEl3orifRefFinal.child(AreaName).updateChildren(AbuMap).addOnCompleteListener(new OnCompleteListener() {
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+
+                                }
+                            });
+
 
                         }
                         if(userCalcLikesTop3.size() == 3)
                         {
-                            userRef.child(childKey).child("user_type").setValue(5);
+                            HashMap AbuMap = new HashMap();
+                            AbuMap.put("BronzeID" , childKey);
+                            AbuEl3orifRefFinal.child(AreaName).updateChildren(AbuMap).addOnCompleteListener(new OnCompleteListener() {
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+
+                                }
+                            });
 
                             break;
                         }
                     }
                 }
+
+                //--------------------------------------------------------------------------------------------------------
+
+
+
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+//
+//
+//
+//            }
+//        }, 30000);
+//        //--------------------------------------------------------------
+
+
+
+
 
 
 
@@ -482,7 +538,15 @@ public class QuestionCommentsActivity extends AppCompatActivity
 
 
 
+
+
         });
+
+        //------------------------------------------calc abuEl3orif Method--------------------------------------------
+
+
+
+
 
 
 
@@ -500,7 +564,7 @@ public class QuestionCommentsActivity extends AppCompatActivity
             {
                 if(dataSnapshot.exists())
                 {
-                    CommentuserPP = dataSnapshot.child("profileImage").getValue().toString();
+                    CommentuserPP = dataSnapshot.child("ImageUrl").getValue().toString();
                     CommentuserUsername = dataSnapshot.child("username").getValue().toString();
 
                 }
@@ -593,6 +657,8 @@ public class QuestionCommentsActivity extends AppCompatActivity
                         ClickQuestionCommentIntent.putExtra("QuestionCommentKey" , QuestionCommentKey);
                         ClickQuestionCommentIntent.putExtra("SelectedArea" , selectedArea);
                         ClickQuestionCommentIntent.putExtra("SelectedCategory", selectedCategory);
+                        ClickQuestionCommentIntent.putExtra("QuestionKey", QuestionKey);
+
 
                         startActivity(ClickQuestionCommentIntent);
 
@@ -730,6 +796,12 @@ public class QuestionCommentsActivity extends AppCompatActivity
         //================================================================================
 
         CalcAbuEl2orifMethod();
+    }
+
+
+    public void calcAbuEl3orifMethod()
+    {
+
     }
 
     public static HashMap<String, Integer> sortByValue(HashMap <String , Integer> hm)
@@ -909,7 +981,10 @@ public class QuestionCommentsActivity extends AppCompatActivity
             requestOptions.placeholder(R.drawable.profile_icon);
 
             //Picasso.with(ctx).load(question_uPP).into(q_Upp);
-            Glide.with(context).applyDefaultRequestOptions(requestOptions).load(question_c_uPP).into(q_Upp);
+            // Glide.with(context).applyDefaultRequestOptions(requestOptions).load(question_c_uPP).into(q_Upp);
+            Glide.with(getApplicationContext()).load(question_c_uPP).into(q_Upp);
+
+
             // Picasso.with(ctx).load(question_uPP).placeholder(R.drawable.profile_icon).into(q_Upp);
         }
 

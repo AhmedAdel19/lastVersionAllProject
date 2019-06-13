@@ -175,9 +175,11 @@ public class Edit_specific_area extends AppCompatActivity {
 
 
                 areaRef2.child(AreaName).updateChildren(areaobj);
+                Toast.makeText(getApplicationContext(),"Area Saved",Toast.LENGTH_LONG).show();
 
                 Intent a = new Intent(Edit_specific_area.this, Manage_Areas.class);
                 startActivity(a);
+                finish();
             }
         });
 

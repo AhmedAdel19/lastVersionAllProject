@@ -24,7 +24,7 @@ import java.io.Serializable;
 
 public class Edit_Delete_All_Areas extends AppCompatActivity {
 
-    DatabaseReference areaRef;
+    DatabaseReference areaRef , areaQuestionRef , areaCalcAbuRef , areaFinalAbo;
 
 
     public TextView areaName, area_lat, area_long;
@@ -48,7 +48,11 @@ public class Edit_Delete_All_Areas extends AppCompatActivity {
         final String AreaName = bundle.getString("areaName");
         final double AreaLatitude = bundle.getDouble("areaLatitude");
         final double AreaLongitude = bundle.getDouble("areaLongitude");
-
+        /****************Delete and Edit Handel****************/
+        areaQuestionRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("Questions").child(AreaName);
+        areaCalcAbuRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("CalcAbuEl3orif").child(AreaName);
+        areaFinalAbo =FirebaseDatabase.getInstance().getReference().child("finalAbuEl3orifs");
+        /******************************************************/
         areaRef = FirebaseDatabase.getInstance().getReference().child("AbuEl3orifDB").child("Areas").child(AreaName);
         areaRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -89,8 +93,12 @@ public class Edit_Delete_All_Areas extends AppCompatActivity {
                 delBtnArea.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        areaFinalAbo.removeValue();
+                        areaQuestionRef.removeValue();
+                        areaCalcAbuRef.removeValue();
                         areaRef.removeValue();
                         sendToManageArea();
+
                     }
                 });
 
@@ -115,8 +123,11 @@ public class Edit_Delete_All_Areas extends AppCompatActivity {
     }
 
     private void sendToManageArea() {
+        Toast.makeText(getApplicationContext(),"Area Deleted",Toast.LENGTH_LONG).show();
+
         Intent manageAreaactivity = new Intent(Edit_Delete_All_Areas.this, Manage_Areas.class);
         startActivity(manageAreaactivity);
+        finish();
     }
 }
 
